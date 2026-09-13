@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Color Flashcards</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&display=swap');
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    background:#faf7ff;
+    font-family:'Baloo 2',cursive;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+
+.star{
+    position:absolute;
+    font-size:28px;
+    animation:float 5s infinite ease-in-out;
+}
+
+@keyframes float{
+    50%{
+        transform:translateY(-25px);
+    }
+}
+
+
+.container{
+    width:95%;
+    max-width:430px;
+    text-align:center;
+}
+
+
+h1{
+    font-size:42px;
+    color:#a98bff;
+    margin:10px;
+}
+
+
+.progress{
+    font-size:22px;
+    color:#666;
+}
+
+
+.score{
+    font-size:22px;
+    color:#ffb000;
+    margin-bottom:15px;
+}
+
+
+
+.card{
+
+    background:white;
+    border:12px solid #b39aff;
+    border-radius:40px;
+
+    padding:30px 20px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+    animation:show .4s;
+
+}
+
+
+
+@keyframes show{
+
+from{
+    transform:scale(.8);
+    opacity:0;
+}
+
+to{
+    transform:scale(1);
+    opacity:1;
+}
+
+}
+
+
+
+.color-box{
+
+    width:210px;
+    height:210px;
+
+    border-radius:40px;
+
+    margin:15px auto;
+
+}
+
+
+
+.question{
+
+    font-size:34px;
+    color:#333;
+
+    margin:15px;
+
+}
+
+
+
+.answers button{
+
+    width:90%;
+
+    padding:14px;
+
+    margin:7px;
+
+    border:none;
+
+    border-radius:25px;
+
+    background:#c4b5fd;
+
+    color:white;
+
+    font-size:25px;
+
+    font-family:inherit;
+
+    cursor:pointer;
+
+}
+
+
+
+.answers button:hover{
+
+    transform:scale(1.05);
+
+}
+
+
+
+.correct{
+
+    background:#7bdc75!important;
+
+}
+
+
+
+.wrong{
+
+    background:#ff8fa3!important;
+
+}
+
+
+
+.message{
+
+    min-height:40px;
+
+    font-size:25px;
+
+    color:#666;
+
+    margin-top:15px;
+
+}
+
+
+
+.finish{
+
+    display:none;
+
+    background:white;
+
+    border:12px solid #b39aff;
+
+    border-radius:40px;
+
+    padding:40px;
+
+}
+
+
+
+.finish h2{
+
+    color:#a98bff;
+    font-size:38px;
+
+}
+
+
+
+.reset{
+
+    margin-top:15px;
+
+    border:none;
+
+    background:#ff9fc8;
+
+    color:white;
+
+    padding:12px 30px;
+
+    border-radius:30px;
+
+    font-size:22px;
+
+    font-family:inherit;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="star" style="top:10%;left:10%">⭐</div>
+<div class="star" style="top:20%;right:10%">✨</div>
+<div class="star" style="bottom:15%;left:15%">🌈</div>
+
+
+<div class="container">
+
+
+<h1>🌈 Colors</h1>
+
+
+<div id="game">
+
+
+<div class="progress">
+
+Color <span id="number">1</span> / 12
+
+</div>
+
+
+<div class="score">
+
+⭐ <span id="score">0</span>
+
+</div>
+
+
+
+<div class="card" id="card">
+
+
+<div class="color-box" id="colorBox"></div>
+
+
+<div class="question" id="question"></div>
+
+
+<div class="answers" id="answers"></div>
+
+
+<div class="message" id="message">
+
+Choose the answer 😊
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="finish" id="finish">
+
+<h2>🎉 Amazing!</h2>
+
+<p>
+You learned all colors!
+</p>
+
+
+<p>
+⭐ Score:
+<span id="finalScore"></span>/12
+</p>
+
+
+<button class="reset" onclick="restart()">
+
+Play Again 🔄
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+const colors=[
+
+{
+indo:"Merah",
+eng:"Red",
+color:"#ef233c"
+},
+
+{
+indo:"Biru",
+eng:"Blue",
+color:"#4dabf7"
+},
+
+{
+indo:"Kuning",
+eng:"Yellow",
+color:"#ffd43b"
+},
+
+{
+indo:"Hijau",
+eng:"Green",
+color:"#69db7c"
+},
+
+{
+indo:"Ungu",
+eng:"Purple",
+color:"#b197fc"
+},
+
+{
+indo:"Oranye",
+eng:"Orange",
+color:"#ffa94d"
+},
+
+{
+indo:"Pink",
+eng:"Pink",
+color:"#ff87c8"
+},
+
+{
+indo:"Hitam",
+eng:"Black",
+color:"#333333"
+},
+
+{
+indo:"Putih",
+eng:"White",
+color:"#ffffff"
+},
+
+{
+indo:"Cokelat",
+eng:"Brown",
+color:"#9c6644"
+},
+
+{
+indo:"Abu-abu",
+eng:"Gray",
+color:"#adb5bd"
+},
+
+{
+indo:"Emas",
+eng:"Gold",
+color:"#ffd700"
+}
+
+];
+
+
+let index=0;
+let score=0;
+let locked=false;
+
+
+
+function loadCard(){
+
+
+locked=false;
+
+
+let item=colors[index];
+
+
+document.getElementById("number")
+.innerHTML=index+1;
+
+
+document.getElementById("colorBox")
+.style.background=item.color;
+
+
+document.getElementById("question")
+.innerHTML=
+item.indo+" adalah?";
+
+
+
+let choices=[item.eng];
+
+
+while(choices.length<3){
+
+let random=
+colors[Math.floor(Math.random()*colors.length)].eng;
+
+
+if(!choices.includes(random)){
+
+choices.push(random);
+
+}
+
+}
+
+
+
+choices.sort(()=>Math.random()-0.5);
+
+
+
+let html="";
+
+
+choices.forEach(answer=>{
+
+html+=`
+
+<button onclick="check('${answer}',this)">
+${answer}
+</button>
+
+`;
+
+});
+
+
+document.getElementById("answers")
+.innerHTML=html;
+
+
+document.getElementById("message")
+.innerHTML="Choose the answer 😊";
+
+
+}
+
+
+
+
+function check(answer,button){
+
+
+if(locked)return;
+
+
+
+let correct=colors[index].eng;
+
+
+
+if(answer===correct){
+
+
+locked=true;
+
+
+button.classList.add("correct");
+
+
+score++;
+
+
+document.getElementById("score")
+.innerHTML=score;
+
+
+document.getElementById("message")
+.innerHTML=
+"🎉 Correct! "+colors[index].indo+" = "+correct;
+
+
+setTimeout(()=>{
+
+next();
+
+},1200);
+
+
+
+}
+
+else{
+
+
+button.classList.add("wrong");
+
+
+document.getElementById("message")
+.innerHTML=
+"❌ Try Again";
+
+
+}
+
+
+
+}
+
+
+
+function next(){
+
+
+index++;
+
+
+if(index>=colors.length){
+
+finish();
+
+return;
+
+}
+
+
+loadCard();
+
+
+}
+
+
+
+function finish(){
+
+
+document.getElementById("game")
+.style.display="none";
+
+
+document.getElementById("finish")
+.style.display="block";
+
+
+document.getElementById("finalScore")
+.innerHTML=score;
+
+
+}
+
+
+
+function restart(){
+
+
+index=0;
+
+score=0;
+
+
+document.getElementById("score")
+.innerHTML=0;
+
+
+document.getElementById("game")
+.style.display="block";
+
+
+document.getElementById("finish")
+.style.display="none";
+
+
+loadCard();
+
+
+}
+
+
+
+loadCard();
+
+
+</script>
+
+
+</body>
+</html>
